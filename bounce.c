@@ -4,7 +4,7 @@ CSCI 243 Project 4
 1 player pong-like game using curses
 */
 
-#include <curses.h>
+#include <ncurses.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -81,7 +81,7 @@ int main(void) {
         if ((ball.px + ball.dx) < 1) {  // ball-side collision
             ball.dx *= -1;
         }
-        jif ((ball.px + ball.dx == paddle.px) &&
+        if ((ball.px + ball.dx == paddle.px) &&
             (ball.py + ball.dy >= paddle.py) &&
             (ball.py + ball.dy <=
              (paddle.py + paddle.length))) {  // ball-paddle collision
