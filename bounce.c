@@ -12,6 +12,8 @@ CSCI 243 Project 4
 #define BORDER "#"
 #define PADDLE "||"
 
+#define SLEEP_TIME 20000
+
 struct Ball {
     int px, py, dx, dy;
 };
@@ -39,8 +41,8 @@ int main(void) {
     getmaxyx(stdscr, max_y, max_x);
     ball.py = max_y / 2;
     ball.px = max_x / 2;
-    ball.dy = rand() % 2 == 1 ? 1 : -1;
-    ball.dx = rand() % 2 == 1 ? 1 : -1;
+    ball.dy = rand() & 1 ? 1 : -1;
+    ball.dx = rand() & 1 ? 1 : -1;
     paddle.length = 6;
     paddle.py = (max_y / 2) - (paddle.length / 2);
     paddle.px = max_x - 3;
@@ -55,18 +57,18 @@ int main(void) {
             "Hits: %d     Misses: %d     Streak: %d     Best: %d     Time: %d",
             hits, misses, streak, best, frame / 50);  // draw stats
         attron(COLOR_PAIR(3));
-        for (int i = 0; i < max_x; i++) {  // draw top border
+        for (int i = 0; i < max_x; i++) {  // draw top borders
             mvprintw(1, i, BORDER);
             mvprintw(max_y - 1, i, BORDER);
         }
-        for (int i = 1; i < max_y; i++) {  // draw side borders
+        for (int i = 1; i < max_y; i++) {  // draw side border
             mvprintw(i, 0, BORDER);
         }
         attroff(COLOR_PAIR(3));
         attron(COLOR_PAIR(1));
         paddle.px = max_x - 3;  // in case window was resized update paddle x-pos
         for (int i = 0; i < paddle.length; i++) {
-            mvprintw(paddle.py + i, paddle.px, PADDLE); // draw paddle
+            mvprintw(paddle.py + i, paddle.px, PADDLE);  // draw paddle
         }
         attroff(COLOR_PAIR(1));
         attron(COLOR_PAIR(2));
@@ -91,13 +93,12 @@ int main(void) {
             ball.dx *= -1;
         }
         if (ball.px > max_x) {  // ball has passed the paddle
-            printf("%c", (char)7);
             misses++;
             streak = 0;
             ball.py = max_y / 2;
             ball.px = max_x / 2;
-            ball.dy = rand() % 2 == 1 ? 1 : -1;
-            ball.dx = rand() % 2 == 1 ? 1 : -1;
+            ball.dy = rand() & 1 ? 1 : -1;
+            ball.dx = rand() & 1 ? 1 : -1;
         }
         if (frame % 4 == 0) {
             ball.py += ball.dy;
@@ -119,7 +120,7 @@ int main(void) {
                 break;
         }
         frame++;
-        usleep(20000);
+        usleep(SLEEP_TIME);
     }
     // exit
     endwin();
