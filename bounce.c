@@ -7,8 +7,9 @@ CSCI 243 Project 4
 #include <ncurses.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
 
-#define BALL_SYMBOL "O"
 #define BORDER "#"
 #define PADDLE "||"
 
@@ -26,6 +27,7 @@ int main(void) {
     // initialization
     int hits = 0, misses = 0, best = 0, streak = 0, quit = 0, frame = 1, max_y,
         max_x;
+    char ball_symbol = '0';
     struct Ball ball;
     struct Paddle paddle;
     system("clear");
@@ -46,6 +48,8 @@ int main(void) {
     paddle.length = 6;
     paddle.py = (max_y / 2) - (paddle.length / 2);
     paddle.px = max_x - 3;
+
+	srand(time(NULL));
 
     // game logic
     while (!quit) {
@@ -72,7 +76,7 @@ int main(void) {
         }
         attroff(COLOR_PAIR(1));
         attron(COLOR_PAIR(2));
-        mvprintw(ball.py, ball.px, BALL_SYMBOL);  // draw ball
+        mvaddch(ball.py, ball.px, ball_symbol);  // draw ball
         attroff(COLOR_PAIR(2));
 
         // collisions
@@ -108,12 +112,16 @@ int main(void) {
         // input
         switch (getch()) {
             case 'j':
-                if (paddle.py - 1 > 1) paddle.py -= 1;
+                if (paddle.py - 1 > 1) paddle.py += 1;
                 break;
 
             case 'k':
-                if ((paddle.py + paddle.length) + 1 < max_y) paddle.py += 1;
+                if ((paddle.py + paddle.length) + 1 < max_y) paddle.py -= 1;
                 break;
+
+            case ' ':
+            	ball_symbol = (rand() % ('Z' - 'A' + 1)) + 'A';
+            	break;
 
             case 'Q':
                 quit = 1;
